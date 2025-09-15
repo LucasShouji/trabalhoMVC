@@ -1,0 +1,22 @@
+{
+    "name": "mvc",
+    "version": "1.0.0",
+    "description": "",
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "scripts": {
+        "dev": "npx tsx src/main.ts"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.2.1",
+        "tsc": "^2.0.4"
+    },
+    "dependencies": {
+        "express": "^5.1.0",
+        "sqlite3": "^5.1.7",
+        "twig": "^1.17.1",
+        "typescript": "^5.9.2"
+    }
+}
