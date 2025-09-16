@@ -6,23 +6,27 @@ import { UserCreateController } from "./Controller/UserCreateController.js";
 const router = Router();
 const userCreateController = new UserCreateController();
 
-// GET /post/create
+/*
+Métodos para criar os posts da API.
+*/
 router.get("/post/create", async (req, res) => {
   await new PostController(req, res).showForm();
 });
 
-// POST /post/create
+
 router.post("/post/create", async (req, res) => {
   await new PostController(req, res).create();
 });
 
-// GET /user/create -> mostra formulário
+/**
+ * Rotas para criar o usuário da API.
+ */
+
 router.get("/user/create", (req, res) => {
   userCreateController.init(req, res);
   userCreateController.showForm();
 });
 
-// POST /user/create -> processa formulário
 router.post("/user/create", (req, res) => {
   userCreateController.init(req, res);
   userCreateController.create();

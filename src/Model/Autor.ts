@@ -2,6 +2,9 @@
 import { AbstractModel } from "./AbstractModel.js";
 
 export class Autor extends AbstractModel {
+    static getAll() {
+        throw new Error("Method not implemented.");
+    }
     static findAll() {
         throw new Error("Method not implemented.");
     }
@@ -9,9 +12,9 @@ export class Autor extends AbstractModel {
     public email: string | undefined;
 
     constructor(nome: string, email?: string, id?: number) {
-        super("autores"); // nome da tabela
+        super("autores");
         this.nome = nome;
         this.email = email;
-        if (id) this.id = id; // opcional para registros já existentes
+        if (id) this.id = id; 
     }
 }

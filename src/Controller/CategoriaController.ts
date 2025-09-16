@@ -21,7 +21,6 @@ export class CategoriaController extends AbstractController {
     if (!categoria) throw new Error("Categoria não encontrada");
     return categoria;
   } else {
-    // agora usamos o método estático findAll
     return await Categoria.findAll();
   }
 }

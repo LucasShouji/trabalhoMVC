@@ -1,75 +1,65 @@
-// src/Controllers/UserController.ts
+// src/Controller/UserController.ts
+import type { Request, Response } from "express";
 import { AbstractController } from "./AbstractController.js";
 import { Autor } from "../Model/Autor.js";
 
 export class UserController extends AbstractController {
+  protected req: Request;
+  protected res: Response;
 
-  // exibe o formulário de criação ou edição
-  public async showForm(id?: number): Promise<void> {
-    let user: Autor | Record<string, any> = {};
-
-    if (id) {
-      const loaded = await new Autor("", "").load(id); // substitua campos obrigatórios
-      if (!loaded) {
-        return this.res.status(404).send("Usuário não encontrado");
-      }
-      user = loaded;
-      // opcional: carregar posts relacionados
-      if (user.id) {
-        const posts = await user.getPosts?.(); // se você implementar getPosts() no Autor
-        user.posts = posts || [];
-      }
-    }
-
-    this.res.render("user/form.twig", { user });
+  constructor(req: Request, res: Response) {
+    super();
+    this.req = req;
+    this.res = res;
   }
 
-  // cria um novo usuário
-  public async create(): Promise<void> {
-    const { nome, email } = this.getParams();
+  /**
+   * Exibe o formulário de criação de usuário
+   */
+  async showForm() {
+    this.res.render("user/form.twig", { user: {} });
+  }
 
-    if (!nome || !email) {
-      return this.res.render("user/form.twig", { 
-        user: { nome, email }, 
-        error: "Todos os campos são obrigatórios" 
-      });
-    }
-
+  /**
+   * Processa o envio do formulário de criação de usuário
+   */
+  async create() {
     try {
-      const user = new Autor(nome, email);
-      await user.save();
-      this.res.redirect("/user"); // ou rota de listagem de usuários
-    } catch (err: any) {
-      this.res.render("user/form.twig", { 
-        user: { nome, email }, 
-        error: err.message 
+      const { nome } = this.req.body;
+
+      if (!nome || nome.trim() === "") {
+        return this.res.render("user/form.twig", {
+          user: { nome },
+          error: "O nome é obrigatório."
+        });
+      }
+
+      const autor = new Autor(nome);
+      autor.nome = nome;
+      await autor.save();
+
+      return this.res.redirect("/user");
+    } catch (error) {
+      console.error(error);
+      return this.res.render("user/form.twig", {
+        user: this.req.body,
+        error: "Erro ao salvar usuário."
       });
     }
   }
 
-  // atualiza um usuário existente
-  public async update(): Promise<void> {
-    const { id, nome, email } = this.getParams();
-
-    if (!id || !nome || !email) {
-      return this.res.render("user/form.twig", { 
-        user: { id, nome, email }, 
-        error: "Todos os campos são obrigatórios" 
-      });
-    }
-
+  /**
+   * Lista todos os usuários
+   */
+  async index() {
     try {
-      const user = await new Autor("", "").load(Number(id));
-      if (!user) return this.res.status(404).send("Usuário não encontrado");
-
-      user.nome = nome;
-      user.email = email;
-      await user.save();
-      this.res.redirect("/user");
-    } catch (err: any) {
-      this.res.render("user/form.twig", { 
-        user: { id, nome, email }, 
-        error: err.message 
+      const autores = await Autor.getAll();
+      this.res.render("user.twig", { autores });
+    } catch (error) {
+      console.error(error);
+      this.res.render("user.twig", {
+        autores: [],
+        error: "Erro ao listar usuários."
       });
     }
   }
