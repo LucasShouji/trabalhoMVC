@@ -1,6 +1,6 @@
 // src/Controllers/PostsController.ts
 import { AbstractController } from "./AbstractController.js";
-import { Post } from "../Model/Post.js"; // você deve criar o modelo Post
+import { Post } from "../Model/Post.js"; 
 
 export class PostsController extends AbstractController {
   public async execute(): Promise<void> {
